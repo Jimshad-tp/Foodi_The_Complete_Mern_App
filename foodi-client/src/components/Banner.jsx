@@ -102,7 +102,7 @@ const Banner = () => {
             Order Now
           </button>
         </div>
-        
+
       </div>
     </div>
   );
