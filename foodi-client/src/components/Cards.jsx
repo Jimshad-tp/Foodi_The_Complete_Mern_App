@@ -11,9 +11,8 @@ const Cards = ({ item }) => {
     <div className="">
       <div className="card bg-base-100 shadow-xl relative">
         <div
-          className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-green ${
-            isHeartFilled ? "text-rose-500" : "text-white"
-          }`}
+          className={`rating gap-1 absolute right-2 top-2 p-4 heartStar bg-green ${isHeartFilled ? "text-rose-500" : "text-white"
+            }`}
           onClick={handleHeartClick}
         >
           <FaHeart className="h-5 w-5 cursor-pointer" />

@@ -181,7 +181,8 @@ const Menu = () => {
             className={`mx-1 px-3 py-1 rounded-full ${
               currentPage === index + 1 ? "bg-green text-white" : "bg-gray-200"
             }  `}
-          >{index + 1}
+          >
+            {index + 1}
           </button>
         ))}
       </div>
