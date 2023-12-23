@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../contexts/AuthProvider";
+import { Result } from "postcss";
 
 const Modal = () => {
   const {
@@ -9,7 +11,31 @@ const Modal = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+
+  const { signUpWithGmail,login} = useContext(AuthContext)
+  const [errorMassage,setErrorMessage] = useState("")
+
+  const onSubmit = (data) => {
+    const email = data.email;
+    const password = data.password;
+    // console.log(email,password);
+    login(email,password).then((result) => {
+      const user = result.user;
+      alert("Login successfull")
+    }).catch((error) => {
+      const errorMassage = error.message
+      setErrorMessage("Provide a correct email and password")
+
+    })
+  }
+
+  // google sign in
+  const handleLogin = () => {
+    signUpWithGmail().then((result) => {
+      const user = result.user;
+      alert("Login successfull")
+    }).catch((error) => console.log(error))
+  }
   return (
     <div>
       <dialog id="my_modal_5" className="modal modal-middle sm:modal-middle">
@@ -63,7 +89,7 @@ const Modal = () => {
                 />
               </div>
               {/* error text */}
-
+         
               {/* login button */}
               <p className="text-center">
                 Don't have an account?
@@ -73,7 +99,7 @@ const Modal = () => {
               </p>
             </form>
             <div className="text-center space-x-2 mb-5">
-              <button className="btn btn-circle hover:bg-green hover:text-white">
+              <button className="btn btn-circle hover:bg-green hover:text-white" onClick={handleLogin} >
                 <FaGoogle />
               </button>
               <button className="btn btn-circle hover:bg-green hover:text-white">

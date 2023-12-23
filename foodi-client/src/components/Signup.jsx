@@ -1,16 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Link,  } from "react-router-dom";
+import { useForm } from "react-hook-form"
 import Modal from "./Modal";
+import { AuthContext } from "../contexts/AuthProvider";
 
 const Signup = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+      } = useForm();
+
+      const {createUser, login} = useContext(AuthContext);
+          // redirecting to home page or specifig page
+  
+
+      const onSubmit = (data) => {
+        
+        const email = data.email;
+        const password = data.password;
+        createUser(email, password).then((result) => {
+          // Signed up 
+          const user = result.user;
+          alert("Account creation successfully done!")
+          document.getElementById("my_modal_5").close()
+          navigate(from, {replace: true})
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+        })
+  }
   return (
     <div className="flex items-center justify-center">
       <div className="flex items-center justify-center max-w-md bg-white shadow-2xl w-full max-auto  my-20">
@@ -21,30 +44,8 @@ const Signup = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <h3 className="text-lg  m-2 font-bold">Create a New Account</h3>
-            {/* first name */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">First Name</span>
-              </label>
-              <input
-                type="first-name"
-                placeholder="First Name"
-                className="input input-bordered"
-                {...register("first-name")}
-              />
-            </div>
-            {/* last name */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Last Name</span>
-              </label>
-              <input
-                type="last-name"
-                placeholder="Last Name"
-                className="input input-bordered"
-                {...register("last-name")}
-              />
-            </div>
+    
+          
             {/* email */}
             <div className="form-control">
               <label className="label">
@@ -77,7 +78,7 @@ const Signup = () => {
             <div className="form-control mt-6">
               <input
                 className="btn bg-green text-white"
-                value="Login"
+                value="Sign Up"
                 type="submit"
               />
             </div>
@@ -98,7 +99,7 @@ const Signup = () => {
             <form method="dialog">
               <Link
                 to="/"
-                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                className="btn btn-sm btn-circle bg-green btn-ghost absolute right-2 top-2"
               >
                 ✕
               </Link>

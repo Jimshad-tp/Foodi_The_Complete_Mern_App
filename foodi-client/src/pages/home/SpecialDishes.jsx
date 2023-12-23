@@ -8,7 +8,6 @@ import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 
 const SampleNextArrow = (props) => {
   const { className, style, onClick } = props;
-  console.log(props);
   return (
     <div
       className={className}
@@ -42,7 +41,6 @@ const SpecialDishes = () => {
       .then((res) => res.json())
       .then((data) => {
         const specials = data.filter((item) => item.category === "popular");
-        // console.log(specials)
         setRecipes(specials);
       });
   }, []);
