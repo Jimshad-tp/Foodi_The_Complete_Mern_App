@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../contexts/AuthProvider";
 import { Result } from "postcss";
@@ -13,7 +13,13 @@ const Modal = () => {
   } = useForm();
 
   const { signUpWithGmail,login} = useContext(AuthContext)
-  const [errorMassage,setErrorMessage] = useState("")
+  const [errorMessage,setErrorMessage] = useState("")
+
+     // redirecting to home page or specific page
+  const location = useLocation();
+  const navigate = useNavigate();
+const from = location.state?.from?.pathname || "/";
+  
 
   const onSubmit = (data) => {
     const email = data.email;
@@ -22,8 +28,10 @@ const Modal = () => {
     login(email,password).then((result) => {
       const user = result.user;
       alert("Login successfull")
+      document.getElementById("my_modal_5").close()
+      navigate(from, {replace:true})
     }).catch((error) => {
-      const errorMassage = error.message
+      const errorMessage = error.message
       setErrorMessage("Provide a correct email and password")
 
     })
@@ -34,6 +42,8 @@ const Modal = () => {
     signUpWithGmail().then((result) => {
       const user = result.user;
       alert("Login successfull")
+      document.getElementById("my_modal_5").close()
+      navigate(from, {replace:true})
     }).catch((error) => console.log(error))
   }
   return (
@@ -89,7 +99,10 @@ const Modal = () => {
                 />
               </div>
               {/* error text */}
-         
+              <div className="flex flex-center">
+             {errorMessage ? <p className="text-red text-xs italic">{errorMessage}</p> : ""} 
+              </div>
+    
               {/* login button */}
               <p className="text-center">
                 Don't have an account?

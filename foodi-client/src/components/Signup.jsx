@@ -1,38 +1,40 @@
 import React, { useContext } from "react";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { Link,  } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"
 import Modal from "./Modal";
 import { AuthContext } from "../contexts/AuthProvider";
 
 const Signup = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-      const {createUser, login} = useContext(AuthContext);
-          // redirecting to home page or specifig page
-  
+  const { createUser, login } = useContext(AuthContext);
+  // redirecting to home page or specific page
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
-      const onSubmit = (data) => {
-        
-        const email = data.email;
-        const password = data.password;
-        createUser(email, password).then((result) => {
-          // Signed up 
-          const user = result.user;
-          alert("Account creation successfully done!")
-          document.getElementById("my_modal_5").close()
-          navigate(from, {replace: true})
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // ..
-        })
+
+  const onSubmit = (data) => {
+    const email = data.email;
+    const password = data.password;
+    createUser(email, password).then((result) => {
+      // Signed up 
+      const user = result.user;
+      alert("Account creation successfully done!")
+      document.getElementById("my_modal_5").close()
+      navigate(from, { replace: true })
+      // ...
+    })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      })
   }
   return (
     <div className="flex items-center justify-center">
@@ -44,8 +46,6 @@ const Signup = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <h3 className="text-lg  m-2 font-bold">Create a New Account</h3>
-    
-          
             {/* email */}
             <div className="form-control">
               <label className="label">
@@ -83,7 +83,7 @@ const Signup = () => {
               />
             </div>
             {/* error text */}
-
+   
             {/* login button */}
             <p className="text-center">
               Have an Account?
