@@ -1,12 +1,70 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, json, useLocation, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
+import { AuthContext } from "../contexts/AuthProvider";
+import { data } from "autoprefixer";
+import Swal from 'sweetalert2'
+import useCart from "../hooks/useCart";
 
 const Cards = ({ item }) => {
+
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const { name, image, price, recipe, _id } = item
+
   const [isHeartFilled, setIsHeartFilled] = useState(false);
+  const { user } = useContext(AuthContext)
+
   const handleHeartClick = () => {
     setIsHeartFilled(!isHeartFilled);
   };
+  //Add to Cart
+  const handleAddtoCart = (item) => {
+    // console.log(item);
+    if (user && user?.email) {
+      const cartItem = { menuItem: _id, name, quantity: 1, image, price, email: user.email };
+      // console.log(cartItem);
+      fetch("http://localhost:5000/carts", {
+        method: "POST",
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(cartItem)
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.insertedId) {
+           
+            Swal.fire({
+              position: "position-absolute top-end",
+              icon: "success",
+              title: "Your work has been saved",
+              showConfirmButton: false,
+              timer: 1500
+            });
+          
+          }
+          
+        })
+    }else{
+      Swal.fire({
+  title: "Please Login!",
+  text: "Without an account can't able to products",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Signup Now"
+}).then((result) => {
+  if (result.isConfirmed) {
+   navigate('/signup',{state:{from:location}})
+  }
+});
+
+    }
+  }
   return (
     <div className="">
       <div className="card bg-base-100 shadow-xl relative">
@@ -33,7 +91,7 @@ const Cards = ({ item }) => {
             <h5 className=" font-semibold">
               <span className="text-sm text-red">${item.price}</span>
             </h5>
-            <button className="btn bg-green text-white">Buy Now</button>
+            <button className="btn bg-green text-white" onClick={() => handleAddtoCart(item)}>Buy Now</button>
           </div>
         </div>
       </div>

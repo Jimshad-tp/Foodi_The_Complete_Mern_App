@@ -12,11 +12,13 @@ const Main = () => {
   return (
     <div className="min-h-screen">
       {loading ? (
-       <LoadingSpinner/>
+        <LoadingSpinner />
       ) : (
         <div>
           <Navbar />
-          <Outlet />
+          <div className="min-h-screen">
+            <Outlet />
+          </div>
           <Footer />
         </div>
       )}
