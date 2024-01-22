@@ -7,9 +7,10 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const port = process.env.PORT ||6000
+const port = process.env.PORT || 6000
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { isObjectIdOrHexString } = require('mongoose')
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@foodi-cluster.jkhl5gt.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -26,17 +27,52 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
-    
+
 
     //database and collections
     const menuCollections = client.db("foodi-client").collection("menu")
-    const cartColllections = client.db("foodi-client").collection("cart")
+    const cartCollections = client.db("foodi-client").collection("cart");
+
+
 
     //all menu items oparations
-    app.get('/menu', async (req,res) => {
+    app.get('/menu', async (req, res) => {
       const result = await menuCollections.find().toArray()
       res.send(result)
     })
+    // all carts oparations
+
+    //Posting cart to db
+    app.post('/carts', async (req, res) => {
+      const cartItem = req.body;
+      const result = await cartCollections.insertOne(cartItem)
+      res.send(result)
+    })
+
+    // get from cart db
+    app.get('/carts', async (req,res) => {
+      const email = req.query.email
+      const filter = {email:email}
+      const result = await cartCollections.find(filter).toArray()
+      res.send(result)
+    })
+
+//get specific carts
+app.get('/carts/:id', async (req,res) => {
+
+  const id = req.params.id
+  const filter = {_id:new ObjectId(id)}
+  const result = await cartCollections.findOne(filter)
+  res.send(result)
+})
+
+    //Delete item from cart
+app.delete('/carts/:id', async (req,res) => {
+  const id = req.params.id
+  const filter = {_id :new ObjectId(id)}
+  const result = await cartCollections.deleteOne(filter)
+  res.send(result)
+})
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
